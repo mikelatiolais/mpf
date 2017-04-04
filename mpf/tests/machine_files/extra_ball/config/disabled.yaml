@@ -12,9 +12,6 @@ coils:
     eject_coil2:
         number:
 
-global_extra_ball_settings:
-  enabled: no
-
 switches:
     s_start:
         number:
@@ -41,3 +38,7 @@ ball_devices:
         confirm_eject_type: target
         eject_timeouts: 2s
         tags: ball_add_live
+
+extra_ball_groups:
+  global:
+    enabled: no

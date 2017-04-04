@@ -5,5 +5,13 @@ mode:
 
 extra_balls:
     test_extra_ball:
-        award_events: extra_ball_award
-        reset_events: extra_ball_reset
+        award_events: test_extra_ball_award
+        reset_events: test_extra_ball_reset
+    eb1:
+        light_events: light_eb1
+        max_per_game: 2
+    eb2:
+        light_events: light_eb2
+    eb3:
+        light_events: light_eb3
+

@@ -16,24 +16,43 @@ class ExtraBall(ModeDevice):
         """Initialise extra ball."""
         super().__init__(machine, name)
         self.player = None
+        self.group = None
+        self._enabled = False
+
+    def _initialize(self):
+
+        super()._initialize()
+
+        self.group = self.config['group']
+
+        try:
+            self.group.extra_ball_initialized(self)
+        except AttributeError:
+            pass
+
+        if self.config['enabled']:
+            self._enabled = True
 
     def award(self, **kwargs):
         """Award extra ball to player if enabled."""
         del kwargs
 
-        if not self.player:
+        if not self.player or not self._enabled:
             return
 
         if (self.config['max_per_game'] and
-                self.player.extra_balls_awarded[self.name] <
+                self.player['extra_ball_{}_awarded'.format(self.name)] <
                 self.config['max_per_game']):
 
-            if self.machine.extra_ball_controller.enabled:
-                self.player.extra_balls_awarded[self.name] += 1
+            if self.group and not self.group.ok_to_award_eb():
+                return
+
+            self.player['extra_ball_{}_awarded'.format(self.name)] += 1
+            self.player.extra_balls += 1
 
             # still need to send this even if EBs are disabled since we want
             # to post the disabled event
-            self.machine.extra_ball_controller.award()
+            self.group.award()
 
     def light(self, **kwargs):
         del kwargs
@@ -66,8 +85,15 @@ class ExtraBall(ModeDevice):
         super().device_added_to_mode(mode, player)
         self.player = player
 
-        if self.name not in self.player.extra_balls_awarded:
-            self.player.extra_balls_awarded[self.name] = 0
+        if not player.is_player_var('extra_ball_{}_awarded'.format(self.name)):
+            player['extra_ball_{}_awarded'.format(self.name)] = 0
+
+        '''player_var: extra_ball_(name)_awarded
+
+        desc: The number of times this extra ball has been awarded to the
+        player in this game. Note that the default max is one (meaning that
+        each extra ball can be awarded once per game), so this value will only
+        be 0 or 1 unless you change the max setting for this extra ball.'''
 
     def device_removed_from_mode(self, mode: Mode):
         """Unload extra ball.
