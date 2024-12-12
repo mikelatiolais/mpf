@@ -1,5 +1,8 @@
 """Contains the code for the bluetooth virtual switch platform
 
+   This functionality is useful for local communication with secondary controllers and other pinball machines.
+   It presents 10 virtual switches
+
 """
 import asyncio
 import logging
