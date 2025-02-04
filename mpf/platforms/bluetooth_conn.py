@@ -4,8 +4,8 @@
    It presents 10 virtual switches.
 
 """
-//import asyncio
-//import logging
+import asyncio
+import logging
 
 from typing import Dict, List, Optional  # pylint: disable-msg=cyclic-import,unused-import
 
